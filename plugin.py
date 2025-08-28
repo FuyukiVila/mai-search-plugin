@@ -7,7 +7,7 @@ from src.plugin_system import (
     ConfigField,
     ToolParamType,
 )
-from tavily import AsyncTavilyClient
+from tavily import TavilyClient
 from src.common.logger import get_logger
 
 
@@ -27,34 +27,27 @@ class TavilyTool(BaseTool):
         ),
     ]
     available_for_llm = True
-    _client = None
     logger = get_logger("tavily")
-
-    def __init__(self):
-        proxies = {
-            "http": self.get_config("tavily.proxy", None),
-            "https": self.get_config("tavily.proxy", None),
-        }
-        api_key: str = self.get_config("tavily.api_key", "")
-        self._client = AsyncTavilyClient(api_key=api_key, proxies=proxies)
-        self.logger.info("初始化Tavily客户端成功")
 
     async def execute(self, function_args: dict[str, Any]) -> dict[str, Any]:
         """执行Tavily搜索"""
         query: str = function_args.get("query")
         max_results: int = function_args.get("max_results", 5)
-        if self._client is None:
-            self.logger.error("Tavily客户端未初始化")
-            return {"name": self.name, "content": "检索失败, 错误: 客户端未初始化"}
+        proxies = {
+            "http": self.get_config("tavily.proxy", None),
+            "https": self.get_config("tavily.proxy", None),
+        }
+        api_key: str = self.get_config("tavily.api_key", "")
+        _client = TavilyClient(api_key=api_key, proxies=proxies)
         try:
-            result = await self._client.search(
+            result = _client.search(
                 query,
                 max_results=max_results,
                 auto_parameters=True,
                 include_answer="advanced",
             )
             if self.get_config("tavily.debug", False):
-                self.logger.debug(f"查询: {query}, 结果: {result["answer"]}")
+                self.logger.debug(f"查询: {query}, 结果: {result['answer']}")
             return {"name": self.name, "content": result["answer"]}
         except Exception as e:
             return {"name": self.name, "content": f"检索失败, 错误: {str(e)}"}
@@ -74,18 +67,14 @@ class SearchPlugin(BasePlugin):
 
     config_schema: dict = {
         "plugin": {
-            "name": ConfigField(
-                type=str, default="search_plugin", description="插件名称"
-            ),
+            "name": ConfigField(type=str, default="search_plugin", description="插件名称"),
             "version": ConfigField(type=str, default="1.0.0", description="插件版本"),
             "enabled": ConfigField(type=bool, default=True, description="是否启用插件"),
         },
         "tavily": {
             "api_key": ConfigField(type=str, default="", description="Tavily API密钥"),
             "proxy": ConfigField(type=str, default=None, description="Tavily代理配置"),
-            "debug": ConfigField(
-                type=bool, default=False, description="是否启用调试模式"
-            ),
+            "debug": ConfigField(type=bool, default=False, description="是否启用调试模式"),
         },
     }
 
