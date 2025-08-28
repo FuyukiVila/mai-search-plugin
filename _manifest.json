@@ -1,0 +1,17 @@
+{
+    "manifest_version": 1,
+    "name": "网络搜索插件",
+    "version": "1.0.0",
+    "description": "让机器人具有网络搜索功能",
+    "author": {
+        "name": "Fuyuki_Vila"
+    },
+    "host_application":{
+        "min_version": "0.8.0"
+    },
+    "license": "GPLv3",
+    "homepage_url": "https://github.com/FuyukiVila/mai-search-plugin.git",
+    "repository_url": "https://github.com/FuyukiVila/mai-search-plugin.git",
+    "keywords": ["web search"],
+    "categories": ["External Integration", "Utility Tools"]
+}
