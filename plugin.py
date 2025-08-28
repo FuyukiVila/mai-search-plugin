@@ -15,7 +15,7 @@ class TavilyTool(BaseTool):
     """使用Tavily进行网络搜索的工具"""
 
     name = "tavily"
-    description = "使用Tavily进行网络搜索，对于任何你不知道的事物，必须使用这个工具搜索"
+    description = "使用Tavily进行网络搜索，对于任何你不知道的事物，使用这个工具搜索"
     parameters = [
         ("query", ToolParamType.STRING, "需要搜索查询的问题/关键词", True, None),
         (
@@ -67,14 +67,18 @@ class SearchPlugin(BasePlugin):
 
     config_schema: dict = {
         "plugin": {
-            "name": ConfigField(type=str, default="search_plugin", description="插件名称"),
+            "name": ConfigField(
+                type=str, default="search_plugin", description="插件名称"
+            ),
             "version": ConfigField(type=str, default="1.0.0", description="插件版本"),
             "enabled": ConfigField(type=bool, default=True, description="是否启用插件"),
         },
         "tavily": {
             "api_key": ConfigField(type=str, default="", description="Tavily API密钥"),
             "proxy": ConfigField(type=str, default=None, description="Tavily代理配置"),
-            "debug": ConfigField(type=bool, default=False, description="是否启用调试模式"),
+            "debug": ConfigField(
+                type=bool, default=False, description="是否启用调试模式"
+            ),
         },
     }
 
