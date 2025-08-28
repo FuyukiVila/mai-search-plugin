@@ -15,7 +15,7 @@ class TavilyTool(BaseTool):
     """使用Tavily进行网络搜索的工具"""
 
     name = "tavily"
-    description = "使用Tavily进行网络搜索"
+    description = "使用Tavily进行网络搜索，对于任何你不知道的事物，必须使用这个工具搜索"
     parameters = [
         ("query", ToolParamType.STRING, "需要搜索查询的问题/关键词", True, None),
         (
@@ -26,6 +26,7 @@ class TavilyTool(BaseTool):
             None,
         ),
     ]
+    available_for_llm = True
     _client = None
     logger = get_logger("tavily")
 
@@ -53,7 +54,7 @@ class TavilyTool(BaseTool):
                 include_answer="advanced",
             )
             if self.get_config("tavily.debug", False):
-                self.logger.debug(f"查询: {query}, 结果: {result}")
+                self.logger.debug(f"查询: {query}, 结果: {result["answer"]}")
             return {"name": self.name, "content": result["answer"]}
         except Exception as e:
             return {"name": self.name, "content": f"检索失败, 错误: {str(e)}"}
