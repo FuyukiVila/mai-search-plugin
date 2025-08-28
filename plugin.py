@@ -54,7 +54,7 @@ class TavilyTool(BaseTool):
                 include_answer="advanced",
             )
             if self.get_config("tavily.debug", False):
-                self.logger.debug(f"查询: {query}, 结果: {result["answer"]}")
+                self.logger.debug(f"查询: {query}, 结果: {result['answer']}")
             return {"name": self.name, "content": result["answer"]}
         except Exception as e:
             return {"name": self.name, "content": f"检索失败, 错误: {str(e)}"}
