@@ -36,6 +36,7 @@ class TavilyTool(BaseTool):
         }
         api_key: str = self.get_config("tavily.api_key", "")
         self._client = AsyncTavilyClient(api_key=api_key, proxies=proxies)
+        self.logger.info("初始化Tavily客户端成功")
 
     async def execute(self, function_args: dict[str, Any]) -> dict[str, Any]:
         """执行Tavily搜索"""
