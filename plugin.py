@@ -1,17 +1,10 @@
-from typing import List, Tuple, Type, Any, Dict
-from unittest import result
+from typing import List, Tuple, Type, Any
 from src.plugin_system import (
     BasePlugin,
     register_plugin,
-    BaseAction,
-    BaseCommand,
     BaseTool,
     ComponentInfo,
-    ActionActivationType,
     ConfigField,
-    BaseEventHandler,
-    EventType,
-    MaiMessages,
     ToolParamType,
 )
 from tavily import AsyncTavilyClient
@@ -25,7 +18,13 @@ class TavilyTool(BaseTool):
     description = "使用Tavily进行网络搜索"
     parameters = [
         ("query", ToolParamType.STRING, "需要搜索查询的问题/关键词", True, None),
-        ("max_results", ToolParamType.INTEGER, "返回的搜索结果数量，默认5条", False, None),
+        (
+            "max_results",
+            ToolParamType.INTEGER,
+            "返回的搜索结果数量，默认5条",
+            False,
+            None,
+        ),
     ]
     _client = None
     logger = get_logger("tavily")
@@ -47,7 +46,10 @@ class TavilyTool(BaseTool):
             return {"name": self.name, "content": "检索失败, 错误: 客户端未初始化"}
         try:
             result = await self._client.search(
-                query, max_results=max_results, auto_parameters=True, include_answer="advanced"
+                query,
+                max_results=max_results,
+                auto_parameters=True,
+                include_answer="advanced",
             )
             if self.get_config("tavily.debug", False):
                 self.logger.debug(f"查询: {query}, 结果: {result}")
@@ -70,14 +72,18 @@ class SearchPlugin(BasePlugin):
 
     config_schema: dict = {
         "plugin": {
-            "name": ConfigField(type=str, default="search_plugin", description="插件名称"),
+            "name": ConfigField(
+                type=str, default="search_plugin", description="插件名称"
+            ),
             "version": ConfigField(type=str, default="1.0.0", description="插件版本"),
             "enabled": ConfigField(type=bool, default=True, description="是否启用插件"),
         },
         "tavily": {
             "api_key": ConfigField(type=str, default="", description="Tavily API密钥"),
             "proxy": ConfigField(type=str, default=None, description="Tavily代理配置"),
-            "debug": ConfigField(type=bool, default=False, description="是否启用调试模式"),
+            "debug": ConfigField(
+                type=bool, default=False, description="是否启用调试模式"
+            ),
         },
     }
 
