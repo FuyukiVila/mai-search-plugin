@@ -1,0 +1,26 @@
+name: Format Python Code
+
+on:
+  push:
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Ruff and Run Checks
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: "--version"
+          version: "latest"
+      - name: Run Ruff Fix
+        run: ruff check --fix --unsafe-fixes
+      - name: Run Ruff Format
+        run: ruff format
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: "style: auto format by ruff"
