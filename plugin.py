@@ -75,7 +75,7 @@ class SearchPlugin(BasePlugin):
         },
         "tavily": {
             "api_key": ConfigField(type=str, default="", description="Tavily API密钥"),
-            "proxy": ConfigField(type=str, default=None, description="Tavily代理配置"),
+            "proxy": ConfigField(type=str, default="", description="Tavily代理配置"),
             "debug": ConfigField(
                 type=bool, default=False, description="是否启用调试模式"
             ),
